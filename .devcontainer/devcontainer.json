@@ -1,0 +1,33 @@
+{
+    "name": "cutt-ovh-backend",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "args": {
+            "VARIANT": "1.17-bullseye",
+        }
+    },
+    "runArgs": [
+        "--cap-add=SYS_PTRACE",
+        "--security-opt",
+        "seccomp=unconfined"
+    ],
+    "settings": {
+        "go.toolsManagement.checkForUpdates": "local",
+        "go.useLanguageServer": true,
+        "go.gopath": "/go",
+        "go.goroot": "/usr/local/go",
+        "workbench.colorTheme": "Cobalt2"
+    },
+    "extensions": [
+        "golang.Go",
+        "wesbos.theme-cobalt2",
+        "humao.rest-client",
+        "eamodio.gitlens",
+        "CoenraadS.bracket-pair-colorizer",
+        "mutantdino.resourcemonitor"
+    ],
+    "forwardPorts": [
+        9000
+    ],
+    "remoteUser": "vscode"
+}
