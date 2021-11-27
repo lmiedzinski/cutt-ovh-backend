@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS redirects(
+    slug VARCHAR(12) PRIMARY KEY,
+    url VARCHAR(512)
+);
