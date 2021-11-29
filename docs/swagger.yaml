@@ -1,0 +1,55 @@
+basePath: /v1
+definitions:
+  apiv1.postRedirectRequest:
+    properties:
+      url:
+        type: string
+    type: object
+  apiv1.postRedirectResponse:
+    properties:
+      slug:
+        type: string
+      url:
+        type: string
+    type: object
+  apiv1.response:
+    properties:
+      error:
+        example: message
+        type: string
+    type: object
+host: localhost:9000
+info:
+  contact: {}
+  description: cutt.ovh Backend
+  title: cutt.ovh Backend API
+  version: "1.0"
+paths:
+  /redirect:
+    post:
+      consumes:
+      - application/json
+      description: Adds new short url redirect
+      operationId: postRedirect
+      parameters:
+      - description: Set up url to shorten
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/apiv1.postRedirectRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/apiv1.postRedirectResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apiv1.response'
+      summary: Add redirect
+      tags:
+      - redirect
+swagger: "2.0"
