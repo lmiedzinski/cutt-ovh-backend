@@ -1,21 +1,29 @@
 basePath: /v1
 definitions:
-  apiv1.postRedirectRequest:
-    properties:
-      url:
-        type: string
-    type: object
-  apiv1.postRedirectResponse:
+  redirect.getRedirectBySlugResponse:
     properties:
       slug:
         type: string
       url:
         type: string
     type: object
-  apiv1.response:
+  redirect.postRedirectRequest:
     properties:
+      url:
+        type: string
+    type: object
+  redirect.postRedirectResponse:
+    properties:
+      slug:
+        type: string
+      url:
+        type: string
+    type: object
+  redirect.redirectErrorResponse:
+    properties:
+      code:
+        type: integer
       error:
-        example: message
         type: string
     type: object
 host: localhost:9000
@@ -37,19 +45,75 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/apiv1.postRedirectRequest'
+          $ref: '#/definitions/redirect.postRedirectRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/apiv1.postRedirectResponse'
+            $ref: '#/definitions/redirect.postRedirectResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/apiv1.response'
+            $ref: '#/definitions/redirect.redirectErrorResponse'
       summary: Add redirect
+      tags:
+      - redirect
+  /redirect/{slug}:
+    get:
+      consumes:
+      - application/json
+      description: Gets shortened url info by slug
+      operationId: getRedirectBySlug
+      parameters:
+      - description: Slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/redirect.getRedirectBySlugResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/redirect.redirectErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/redirect.redirectErrorResponse'
+      summary: Get redirect
+      tags:
+      - redirect
+  /redirect/{slug}/execute:
+    get:
+      consumes:
+      - application/json
+      description: Executes redirect to original url
+      operationId: getRedirectExecute
+      parameters:
+      - description: Slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      responses:
+        "301":
+          description: ""
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/redirect.redirectErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/redirect.redirectErrorResponse'
+      summary: Get execute redirect
       tags:
       - redirect
 swagger: "2.0"

@@ -6,12 +6,11 @@ import (
 	"syscall"
 
 	"github.com/lmiedzinski/cutt-ovh-backend/config"
-	"github.com/lmiedzinski/cutt-ovh-backend/internal/controller/http/apiv1"
-	"github.com/lmiedzinski/cutt-ovh-backend/internal/usecase"
-	"github.com/lmiedzinski/cutt-ovh-backend/internal/usecase/repository"
-	"github.com/lmiedzinski/cutt-ovh-backend/pkg/httpserver"
-	"github.com/lmiedzinski/cutt-ovh-backend/pkg/logger"
-	"github.com/lmiedzinski/cutt-ovh-backend/pkg/postgres"
+	"github.com/lmiedzinski/cutt-ovh-backend/internal/httpserver"
+	"github.com/lmiedzinski/cutt-ovh-backend/internal/logger"
+	"github.com/lmiedzinski/cutt-ovh-backend/internal/postgres"
+	"github.com/lmiedzinski/cutt-ovh-backend/pkg/domain/redirect"
+	"github.com/lmiedzinski/cutt-ovh-backend/pkg/transport/http/apiv1"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,17 +20,20 @@ func Run(cfg *config.Config) {
 	logger.Info("service starting")
 
 	// Repositories setup
-	pg, err := postgres.New(logger, cfg.PostgresConnectionString)
+	pg, err := postgres.New(cfg.PostgresConnectionString)
 	if err != nil {
 		logger.Fatal(err)
 	}
 	defer pg.Close()
+	redirectRepository := redirect.NewRedirectPostgresRepository(pg)
 
-	redirectUseCase := usecase.NewRedirectUseCase(repository.NewRedirectPostgresRepository(pg))
+	// Services setup
+	redirectService := redirect.NewRedirectService(redirectRepository)
 
 	// HTTP Server
 	handler := gin.New()
-	apiv1.NewRouter(handler, logger, redirectUseCase)
+	redirectHandler := redirect.NewRedirectHttpHandler(redirectService, logger)
+	apiv1.AddHttpRouter(handler, logger, redirectHandler)
 	httpServer := httpserver.New(handler, httpserver.Port(cfg.PortNumber))
 
 	// Waiting signal

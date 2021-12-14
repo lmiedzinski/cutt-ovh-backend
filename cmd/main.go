@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/lmiedzinski/cutt-ovh-backend/config"
-	"github.com/lmiedzinski/cutt-ovh-backend/internal/app"
+	"github.com/lmiedzinski/cutt-ovh-backend/pkg/app"
 )
 
 func main() {
