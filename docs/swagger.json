@@ -30,7 +30,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/apiv1.postRedirectRequest"
+                            "$ref": "#/definitions/redirect.postRedirectRequest"
                         }
                     }
                 ],
@@ -38,13 +38,97 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/apiv1.postRedirectResponse"
+                            "$ref": "#/definitions/redirect.postRedirectResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/apiv1.response"
+                            "$ref": "#/definitions/redirect.redirectErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/redirect/{slug}": {
+            "get": {
+                "description": "Gets shortened url info by slug",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "redirect"
+                ],
+                "summary": "Get redirect",
+                "operationId": "getRedirectBySlug",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Slug",
+                        "name": "slug",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/redirect.getRedirectBySlugResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/redirect.redirectErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/redirect.redirectErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/redirect/{slug}/execute": {
+            "get": {
+                "description": "Executes redirect to original url",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "redirect"
+                ],
+                "summary": "Get execute redirect",
+                "operationId": "getRedirectExecute",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Slug",
+                        "name": "slug",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "301": {
+                        "description": ""
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/redirect.redirectErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/redirect.redirectErrorResponse"
                         }
                     }
                 }
@@ -52,15 +136,7 @@
         }
     },
     "definitions": {
-        "apiv1.postRedirectRequest": {
-            "type": "object",
-            "properties": {
-                "url": {
-                    "type": "string"
-                }
-            }
-        },
-        "apiv1.postRedirectResponse": {
+        "redirect.getRedirectBySlugResponse": {
             "type": "object",
             "properties": {
                 "slug": {
@@ -71,12 +147,33 @@
                 }
             }
         },
-        "apiv1.response": {
+        "redirect.postRedirectRequest": {
             "type": "object",
             "properties": {
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "redirect.postRedirectResponse": {
+            "type": "object",
+            "properties": {
+                "slug": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "redirect.redirectErrorResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
                 "error": {
-                    "type": "string",
-                    "example": "message"
+                    "type": "string"
                 }
             }
         }

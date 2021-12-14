@@ -41,7 +41,6 @@ func New(level string) *Logger {
 	logger.SetLevel(l)
 	logger.SetOutput(os.Stdout)
 	logger.SetFormatter(&logrus.JSONFormatter{})
-	logger.SetReportCaller(true)
 	return &Logger{
 		logger: logger,
 	}

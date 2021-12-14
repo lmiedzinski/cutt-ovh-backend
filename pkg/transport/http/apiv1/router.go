@@ -8,8 +8,8 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	_ "github.com/lmiedzinski/cutt-ovh-backend/docs"
-	"github.com/lmiedzinski/cutt-ovh-backend/internal/usecase"
-	"github.com/lmiedzinski/cutt-ovh-backend/pkg/logger"
+	"github.com/lmiedzinski/cutt-ovh-backend/internal/logger"
+	"github.com/lmiedzinski/cutt-ovh-backend/pkg/domain/redirect"
 )
 
 // @title       cutt.ovh Backend API
@@ -17,7 +17,7 @@ import (
 // @version     1.0
 // @host        localhost:9000
 // @BasePath    /v1
-func NewRouter(handler *gin.Engine, logger logger.Interface, uc usecase.Redirect) {
+func AddHttpRouter(handler *gin.Engine, logger logger.Interface, h *redirect.RedirectHttpHandler) {
 	// Options
 	handler.Use(gin.Logger())
 	handler.Use(gin.Recovery())
@@ -30,8 +30,8 @@ func NewRouter(handler *gin.Engine, logger logger.Interface, uc usecase.Redirect
 	handler.GET("/ping", func(c *gin.Context) { c.String(http.StatusOK, "pong") })
 
 	// Routers
-	h := handler.Group("/v1")
+	hg := handler.Group("/v1")
 	{
-		newRedirectRoutes(h, uc, logger)
+		h.AddRedirectRoutes(hg)
 	}
 }
